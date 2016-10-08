@@ -22,11 +22,11 @@ $(O_DIR)%.o: $(C_DIR)%.cpp
 	g++ $(FLAGS) $(INCLUDES) -o $@ -c $<
 
 clean:
-	@rm -rf $(O_DIR)
+	@rm -Rf $(O_DIR)
 
 fclean: clean
-	@rm $(NAME) || true
-	@rm -rf .tmp/
+	@rm -f $(NAME)
+	@rm -Rf .tmp/
 
 re: fclean all
 
