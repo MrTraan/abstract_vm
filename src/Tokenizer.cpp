@@ -101,7 +101,13 @@ Tokenizer& Tokenizer::operator=(const Tokenizer& rhs) {
 
 Token Tokenizer::nextToken() {
   skipWhitespace();
+
+  if (peekChar() == 0) {
+    Token ret = {T_EOF, ""};
+    return ret;
+  }
   if (peekChar() == '\n') {
+    readChar();
     Token ret = {T_EOL, "\n"};
     return ret;
   }
@@ -112,13 +118,17 @@ Token Tokenizer::nextToken() {
       return ret;
     }
     skipComment();
+    Token ret = {T_COMMENT, ""};
+    return ret;
   }
   if (peekChar() == '(') {
-    Token ret = {T_R_PAREN, "("};
+    readChar();
+    Token ret = {T_L_PAREN, "("};
     return ret;
   }
   if (peekChar() == ')') {
-    Token ret = {T_R_PAREN, "("};
+    readChar();
+    Token ret = {T_R_PAREN, ")"};
     return ret;
   }
   if (peekFloatingNumber()) {
@@ -138,6 +148,22 @@ Token Tokenizer::readIdentifer() {
 
   if (ident == "add") {
     Token ret = {T_ADD, ident};
+    return ret;
+  }
+  if (ident == "sub") {
+    Token ret = {T_SUB, ident};
+    return ret;
+  }
+  if (ident == "mul") {
+    Token ret = {T_MUL, ident};
+    return ret;
+  }
+  if (ident == "div") {
+    Token ret = {T_DIV, ident};
+    return ret;
+  }
+  if (ident == "mod") {
+    Token ret = {T_MOD, ident};
     return ret;
   }
   if (ident == "push") {
@@ -209,4 +235,73 @@ void Tokenizer::skipComment() {
   do {
     currentChar = readChar();
   } while (currentChar && currentChar != '\n');
+}
+
+void debugPrintToken(const Token& token) {
+  if (token.type == T_ADD) {
+    std::cout << "T_ADD : " << token.value << "\n";
+  }
+  if (token.type == T_SUB) {
+    std::cout << "T_SUB : " << token.value << "\n";
+  }
+  if (token.type == T_MUL) {
+    std::cout << "T_MUL : " << token.value << "\n";
+  }
+  if (token.type == T_DIV) {
+    std::cout << "T_DIV : " << token.value << "\n";
+  }
+  if (token.type == T_MOD) {
+    std::cout << "T_MOD : " << token.value << "\n";
+  }
+  if (token.type == T_PUSH) {
+    std::cout << "T_PUSH : " << token.value << "\n";
+  }
+  if (token.type == T_POP) {
+    std::cout << "T_POP : " << token.value << "\n";
+  }
+  if (token.type == T_DUMP) {
+    std::cout << "T_DUMP : " << token.value << "\n";
+  }
+  if (token.type == T_EXIT) {
+    std::cout << "T_EXIT : " << token.value << "\n";
+  }
+  if (token.type == T_ASSERT) {
+    std::cout << "T_ASSERT : " << token.value << "\n";
+  }
+  if (token.type == T_INT_8) {
+    std::cout << "T_INT_8 : " << token.value << "\n";
+  }
+  if (token.type == T_INT_16) {
+    std::cout << "T_INT_16 : " << token.value << "\n";
+  }
+  if (token.type == T_INT_32) {
+    std::cout << "T_INT_32 : " << token.value << "\n";
+  }
+  if (token.type == T_FLOAT) {
+    std::cout << "T_FLOAT : " << token.value << "\n";
+  }
+  if (token.type == T_DOUBLE) {
+    std::cout << "T_DOUBLE : " << token.value << "\n";
+  }
+  if (token.type == T_R_PAREN) {
+    std::cout << "T_R_PAREN : " << token.value << "\n";
+  }
+  if (token.type == T_L_PAREN) {
+    std::cout << "T_L_PAREN : " << token.value << "\n";
+  }
+  if (token.type == T_EOF) {
+    std::cout << "T_EOF : " << token.value << "\n";
+  }
+  if (token.type == T_EOL) {
+    std::cout << "T_EOL : " << token.value << "\n";
+  }
+  if (token.type == T_FIXED_NUMBER) {
+    std::cout << "T_FIXED_NUMBER : " << token.value << "\n";
+  }
+  if (token.type == T_FLOATING_NUMBER) {
+    std::cout << "T_FLOATING_NUMBER : " << token.value << "\n";
+  }
+  if (token.type == T_INVALID) {
+    std::cout << "T_INVALID : " << token.value << "\n";
+  }
 }

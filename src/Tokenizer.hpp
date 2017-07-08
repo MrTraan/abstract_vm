@@ -4,6 +4,11 @@
 
 enum eToken {
   T_ADD,
+  T_SUB,
+  T_MUL,
+  T_DIV,
+  T_MOD,
+
   T_PUSH,
   T_POP,
   T_DUMP,
@@ -21,6 +26,7 @@ enum eToken {
 
   T_EOF,
   T_EOL,
+  T_COMMENT,
   T_FIXED_NUMBER,
   T_FLOATING_NUMBER,
   T_INVALID
@@ -55,3 +61,5 @@ class Tokenizer {
   Token readFixedNumber();
   Token readIdentifer();
 };
+
+void debugPrintToken(const Token& token);
