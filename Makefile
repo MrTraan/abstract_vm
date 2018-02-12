@@ -8,7 +8,7 @@ O_DIR =	.tmp/obj
 O_DIRS = $(C_DIRS:$(C_DIR)%=$(O_DIR)%)
 O_FILES = $(C_FILES:$(C_DIR)%.cpp=$(O_DIR)%.o)
 
-FLAGS = -Wall -Wextra -Werror
+FLAGS = -Wall -Wextra -Werror -std=c++14
 INCLUDES = -I./src
 
 all: $(NAME)

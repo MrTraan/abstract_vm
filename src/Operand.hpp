@@ -2,7 +2,7 @@
 #include <IOperand.hpp>
 #include <Exception.hpp>
 
-typedef struct sOperandInfo {
+typedef struct {
 	long min;
 	long max;
 	int precision;
