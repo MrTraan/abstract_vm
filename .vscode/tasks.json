@@ -3,18 +3,30 @@
     // for the documentation about the tasks.json format
     "version": "0.1.0",
     "command": "bash",
-    "args": ["-c"],
+    "args": [
+        "-c"
+    ],
     "isShellCommand": true,
     "showOutput": "always",
     "suppressTaskName": true,
     "tasks": [
         {
             "taskName": "build",
-            "args": ["make"]
+            "args": [
+                "make"
+            ]
+        },
+        {
+            "taskName": "build_debug",
+            "args": [
+                "make debug"
+            ]
         },
         {
             "taskName": "start",
-            "args": ["./abstract_vm"]
+            "args": [
+                "./abstract_vm"
+            ]
         }
     ]
 }

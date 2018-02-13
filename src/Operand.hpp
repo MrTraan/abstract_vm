@@ -1,6 +1,7 @@
 #pragma once
 #include <IOperand.hpp>
 #include <Exception.hpp>
+#include "Parser.hpp"
 
 typedef struct {
 	long min;
@@ -23,25 +24,26 @@ class Operand : public IOperand {
 			_type = type;
 
 			if (value < operandInfoHolder[type].min) {
-				throw Exception("Underflow");
+				throw RuntimeException(std::to_string(value) + " underflows type " + operandToWords[type]);
 			} else if (value > operandInfoHolder[type].max) {
-				throw Exception("Overflow");
+				throw RuntimeException(std::to_string(value) + " overflows type " + operandToWords[type]);
 			}
+
+			char buffer[100];
 
 			switch (type) {
 				case INT_8:
-					_stringRep = std::to_string((int)value);
-					break;
 				case INT_16:
-					_stringRep = std::to_string((int)value);
-					break;
 				case INT_32:
-					_stringRep = std::to_string((int)value);
+					sprintf(buffer, "%d", (int)value);
+					_stringRep = std::string(buffer);
 					break;
 				case FLOAT:
-					_stringRep = std::to_string((float)value);
-				default:
-					_stringRep = std::to_string(value);
+					sprintf(buffer, "%g", (float)value);
+					_stringRep = std::string(buffer);
+				case DOUBLE:
+					sprintf(buffer, "%g", value);
+					_stringRep = std::string(buffer);
 			}
 
 			_precision = operandInfoHolder[type].precision;
@@ -122,14 +124,13 @@ class Operand : public IOperand {
 				case DOUBLE:
 					return new Operand<double>(type, _value * std::stod(rhs.toString()));
 			}
-			return NULL;
 		};
+
 		IOperand const* operator/(IOperand const& rhs) const {
 			eOperandType type = std::max(_type, rhs.getType());
 
-			if (std::stod(rhs.toString()) == 0) {
-				throw Exception("Division by zero");
-			}
+			if (std::stod(rhs.toString()) == 0)
+				throw RuntimeException("Division by zero");
 
 			switch (type) {
 				case INT_8:
@@ -146,15 +147,13 @@ class Operand : public IOperand {
 				case DOUBLE:
 					return new Operand<double>(type, _value / std::stod(rhs.toString()));
 			}
-			return NULL;
 		};
 
 		IOperand const* operator%(IOperand const& rhs) const {
 			eOperandType type = std::max(_type, rhs.getType());
-
-			if (type >= FLOAT) {
-				throw Exception("Module with floating point value");
-			}
+			
+			if (std::stod(rhs.toString()) == 0)
+				throw RuntimeException("Modulo by zero");
 
 			switch (type) {
 				case INT_8:
@@ -166,10 +165,10 @@ class Operand : public IOperand {
 				case INT_32:
 					return new Operand<int32_t>(
 							type, (int32_t)_value % (int32_t)std::stoi(rhs.toString()));
-				default:
-					break;
+				case FLOAT:
+				case DOUBLE:
+					throw RuntimeException("Modulo with floating point value");
 			}
-			return NULL;
 		};
 
 	private:

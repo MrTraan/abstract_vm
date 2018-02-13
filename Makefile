@@ -11,14 +11,16 @@ O_FILES = $(C_FILES:$(C_DIR)%.cpp=$(O_DIR)%.o)
 FLAGS = -Wall -Wextra -Werror -std=c++14
 INCLUDES = -I./src
 
+CC = clang++
+
 all: $(NAME)
 
 $(NAME): $(O_FILES)
-	g++ $(FLAGS) $^ $(LIB) $(SRCI) -o $@ && echo "Done"
+	$(CC) $(FLAGS) $^ $(LIB) $(SRCI) -o $@ && echo "Done"
 
 $(O_DIR)%.o: $(C_DIR)%.cpp
 	@mkdir -p $(O_DIRS) $(O_DIR)
-	g++ $(FLAGS) $(INCLUDES) -o $@ -c $<
+	$(CC) $(FLAGS) $(INCLUDES) -o $@ -c $<
 
 clean:
 	@rm -Rf $(O_DIR)
@@ -28,5 +30,8 @@ fclean: clean
 	@rm -Rf .tmp/
 
 re: fclean all
+
+debug: FLAGS+=-g
+debug: re
 
 .PHONY: clean all fclean re

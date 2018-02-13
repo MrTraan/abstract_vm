@@ -17,7 +17,7 @@ enum eInstruction {
 	EXIT
 };
 
-const std::map<std::string, eInstruction> wordsToOp = {
+static std::map<std::string, eInstruction> wordsToOp = {
 	{ "add", ADD },
 	{ "sub", SUB },
 	{ "mul", MUL },
@@ -31,12 +31,20 @@ const std::map<std::string, eInstruction> wordsToOp = {
 	{ "exit", EXIT }
 };
 
-const std::map<std::string, eOperandType> wordsToOperand = {
+static std::map<std::string, eOperandType> wordsToOperand = {
 	{ "int8", INT_8 },
 	{ "int16", INT_16 },
 	{ "int32", INT_32 },
 	{ "float", FLOAT },
 	{ "double", DOUBLE }
+};
+
+static std::map<eOperandType, std::string> operandToWords = {
+	{ INT_8, "int8" },
+	{ INT_16, "int16" },
+	{ INT_32, "int32" },
+	{ FLOAT, "float" },
+	{ DOUBLE, "double" }
 };
 
 typedef struct {

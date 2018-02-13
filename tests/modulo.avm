@@ -1,0 +1,12 @@
+push int8(8)
+push int8(3)
+mod
+assert int8(2)
+dump
+pop
+push int8(8)
+push double(6.50)
+mod
+dump
+pop
+exit
