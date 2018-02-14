@@ -3,14 +3,10 @@
 #include <Parser.hpp>
 #include <Exception.hpp>
 
-unsigned int Factorial( unsigned int number ) {
-    return number <= 1 ? number : Factorial(number-1)*number;
-}
-
 #define BEGIN_SHOULD_THROW() bool hasThrown = false; \
 							try {
 
-#define END_SHOULD_THROW() } catch (const Exception &e) { \
+#define END_SHOULD_THROW(E) } catch (const E &e) { \
 		hasThrown = true; \
 	} \
 	REQUIRE(hasThrown == true);
@@ -19,6 +15,15 @@ unsigned int Factorial( unsigned int number ) {
 		hasThrown = true; \
 	} \
 	REQUIRE(hasThrown == false);
+
+std::string printProgram(std::vector<std::string> program) {
+	std::string res = "";
+
+	for (auto s : program) {
+		res += s + "; ";
+	}
+	return res;
+}
 
 
 static std::vector<std::vector<std::string>> invalidTokens = {
@@ -50,12 +55,34 @@ static std::vector<std::vector<std::string>> validTokens = {
 	{"dump", "exit", "dump", "exit"}
 };
 
+static std::vector<std::vector<std::string>> invalidPrograms = {
+	// Overflow
+	{"push int8(600)", "exit"},
+	{"push int8(125)", "push int8(125)", "add", "exit"},
+	// Underflow
+	{"push int8(-600)", "exit"},
+	{"push int8(-125)", "push int8(-125)", "add", "exit"},
+	// 	Pop on empty stack
+	{"pop", "exit"},
+	{"push int8(2)", "push int8(2)", "pop", "pop", "pop", "exit"},
+	// Division by 0
+	{"push int8(6)", "push double(0.0)", "div", "exit"},
+	{"push int8(6)", "push double(0.0)", "mod", "exit"},
+	{"push double(6.0)", "push int8(0)", "div", "exit"},
+	{"push double(6.0)", "push int8(0)", "mod", "exit"},
+	// Less than two  value with math
+	{"add", "exit"},
+	{"push int8(3)", "div", "exit"},
+	{"push int8(3)", "push int8(3)", "mul", "sub", "exit"},
+	{"push int8(3)", "push int8(3)", "pop", "mod", "exit"}
+};
+
 TEST_CASE( "Parser", "[parser]" ) {
 	SECTION("Throw on invalid token") {
 		for (auto t : invalidTokens) {
 			BEGIN_SHOULD_THROW()
 			parseFile(t);
-			END_SHOULD_THROW()
+			END_SHOULD_THROW(SyntaxException)
 		}
 	}
 	SECTION("Accept valid tokens") {
@@ -65,5 +92,16 @@ TEST_CASE( "Parser", "[parser]" ) {
 			END_SHOULD_NOT_THROW()
 		}
 	}
+}
+
+TEST_CASE( "Runtime", "[runtime]" ) {
+		for (auto p : invalidPrograms) {
+			SECTION(printProgram(p)) {
+				BEGIN_SHOULD_THROW()
+				auto tokens = parseFile(p);
+				executeProgram(tokens);
+				END_SHOULD_THROW(RuntimeException)
+			}
+		}
 }
 

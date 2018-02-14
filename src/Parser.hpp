@@ -54,3 +54,4 @@ typedef struct {
 } Operation;
 
 std::vector<Operation> parseFile(std::vector<std::string> &content);
+void executeProgram(std::vector<Operation>& instructions);

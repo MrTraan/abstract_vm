@@ -1,8 +1,8 @@
 NAME = abstract_vm
 
 C_DIR =	src
-C_TEST_FILES = src/Expection.cpp src/OperandFactory.cpp src/Parser.cpp test/main.cpp
-C_FILES = src/Expection.cpp src/OperandFactory.cpp src/Parser.cpp src/main.cpp
+C_TEST_FILES = src/Expection.cpp src/OperandFactory.cpp src/Parser.cpp test/main.cpp src/execution.cpp
+C_FILES = src/Expection.cpp src/OperandFactory.cpp src/Parser.cpp src/main.cpp src/execution.cpp
 
 O_DIR =	.tmp/obj
 O_FILES = $(C_FILES:$(C_DIR)%.cpp=$(O_DIR)%.o)
