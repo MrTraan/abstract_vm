@@ -21,9 +21,17 @@ void executeProgram(std::vector<Operation>& instructions) {
 				}
 				break;
 			case POP:
-				throw RuntimeException("Pop operation on an empty stack");
+				if (stack.size() == 0)
+					throw RuntimeException("Pop operation on an empty stack");
+				break;
 			case ASSERT:
-				throw RuntimeException("Assert operation on an empty stack");
+				if (stack.size() == 0)
+					throw RuntimeException("Assert operation on an empty stack");
+				break;
+			case PRINT:
+				if (stack.size() == 0)
+					throw RuntimeException("Print operation on an empty stack");
+				break;
 			default:
 				break;
 		}
@@ -42,7 +50,10 @@ void executeProgram(std::vector<Operation>& instructions) {
 							if (stack.size() == 0)
 								break;
 							auto elem = stack.front();
-							std::cout << elem->toString() << "\n";
+						 if (elem->getType() != INT_8)
+							 throw AssertionException("Print operation on a type different than int8");
+						 	const Operand<char> *casted = dynamic_cast<const Operand <char> *>(elem);
+							std::cout << casted->getValue() << "\n";
 							break;
 						}
 			case DUMP:

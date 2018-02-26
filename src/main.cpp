@@ -8,7 +8,7 @@
 #include "Parser.hpp"
 #include "Exception.hpp"
 
-void trim(std::string& s) {
+static void trim(std::string& s) {
 	size_t p = s.find_first_not_of(" \t");
 	s.erase(0, p);
 

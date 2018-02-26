@@ -52,7 +52,9 @@ static std::vector<std::vector<std::string>> validTokens = {
 	{"assert int32(3214)", "exit"},
 	{"print", "exit"},
 	{"dump", "exit"},
-	{"dump", "exit", "dump", "exit"}
+	{"dump", "exit", "dump", "exit"},
+	{"dump;lol", "exit"},
+	{"dump", ";lol", "dump", "exit"}
 };
 
 static std::vector<std::vector<std::string>> invalidPrograms = {
@@ -74,7 +76,15 @@ static std::vector<std::vector<std::string>> invalidPrograms = {
 	{"add", "exit"},
 	{"push int8(3)", "div", "exit"},
 	{"push int8(3)", "push int8(3)", "mul", "sub", "exit"},
-	{"push int8(3)", "push int8(3)", "pop", "mod", "exit"}
+	{"push int8(3)", "push int8(3)", "pop", "mod", "exit"},
+	// Print
+	{"print", "exit"}
+};
+
+static std::vector<std::vector<std::string>> invalidAssertPrograms = {
+	{"push int16(3)", "print", "exit"},
+	{"push int8(6)", "assert int16(6)", "exit"},
+	{"push int16(7)", "assert int16(6)", "exit"}
 };
 
 TEST_CASE( "Parser", "[parser]" ) {
@@ -105,3 +115,13 @@ TEST_CASE( "Runtime", "[runtime]" ) {
 		}
 }
 
+TEST_CASE( "Assertion", "[runtime]" ) {
+		for (auto p : invalidAssertPrograms) {
+			SECTION(printProgram(p)) {
+				BEGIN_SHOULD_THROW()
+				auto tokens = parseFile(p);
+				executeProgram(tokens);
+				END_SHOULD_THROW(AssertionException)
+			}
+		}
+}

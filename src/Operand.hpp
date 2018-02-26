@@ -24,9 +24,9 @@ class Operand : public IOperand {
 			_type = type;
 
 			if (value < operandInfoHolder[type].min) {
-				throw RuntimeException(std::to_string(value) + " underflows type " + operandToWords[type]);
+				throw RuntimeException("Underflow on type " + operandToWords[type]);
 			} else if (value > operandInfoHolder[type].max) {
-				throw RuntimeException(std::to_string(value) + " overflows type " + operandToWords[type]);
+				throw RuntimeException("Overflow on type " + operandToWords[type]);
 			}
 
 			char buffer[100];

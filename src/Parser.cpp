@@ -5,6 +5,15 @@
 #include "Parser.hpp"
 #include "Exception.hpp"
 
+static void trim(std::string& s) {
+	size_t p = s.find_first_not_of(" \t");
+	s.erase(0, p);
+
+	p = s.find_last_not_of(" \t");
+	if (std::string::npos != p)
+		s.erase(p + 1);
+}
+
 bool isSimpleInstruction(eInstruction instruction) {
 	if (instruction == PUSH ||
 			instruction == ASSERT)
@@ -22,15 +31,23 @@ bool isRichInstruction(eInstruction instruction) {
 std::vector<Operation> parseFile(std::vector<std::string> &content)
 {
 	std::vector<Operation> instructionList;
-	std::regex comment("^;.*");
 	std::regex simpleInstruction("^(\\w+)$");
 	std::regex richInstruction("^(\\w+) (\\w+)\\((-?\\d+(?:\\.\\d+)?)\\)$");
 	bool hasExitStatement = false;
 
 	std::smatch match;
-	for (auto line : content) {
-		if (std::regex_search(line, comment))
-			continue;
+	for (auto rawLine : content) {
+		std::string line;
+		auto commentPos = rawLine.find(";");
+		if (commentPos == std::string::npos)
+			line = rawLine;
+		else {
+			line = rawLine.substr(0, commentPos);
+			trim(line);
+			if (line.length() == 0)
+				continue;
+		}
+		
 		if (std::regex_search(line, match, simpleInstruction))
 		{
 			auto it = wordsToOp.find(match[1]);
